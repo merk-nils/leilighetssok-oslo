@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Leilighetssøk Oslo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root { --rod:#ea4f3d; --svart:#121212; --gra:#f8f8f8; --linje:#e2e2e2; --dempet:#666; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:Poppins, sans-serif; color:var(--svart); background:var(--gra); font-size:15px; }
+header { background:var(--svart); color:#fff; padding:18px 16px; }
+header .inn { max-width:1100px; margin:0 auto; display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; }
+header h1 { margin:0; font-size:22px; font-weight:600; }
+header h1 span { color:var(--rod); }
+header p { margin:2px 0 0; font-size:13px; color:#bbb; }
+.knapp { background:var(--rod); color:#fff; border:0; border-radius:6px; padding:10px 16px; font:inherit; font-weight:500; text-decoration:none; cursor:pointer; display:inline-block; }
+.knapp.lys { background:#fff; color:var(--svart); border:1px solid var(--linje); }
+main { max-width:1100px; margin:0 auto; padding:16px; }
+.filtre { background:#fff; border:1px solid var(--linje); border-radius:10px; padding:14px; display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:12px; }
+.filtre label { display:flex; flex-direction:column; font-size:12px; color:var(--dempet); gap:4px; }
+.filtre input, .filtre select { font:inherit; font-size:14px; padding:8px; border:1px solid var(--linje); border-radius:6px; background:#fff; color:var(--svart); }
+.filtre .boks { flex-direction:row; align-items:center; gap:8px; font-size:14px; color:var(--svart); }
+.antall { margin:14px 2px 8px; font-size:14px; color:var(--dempet); }
+.liste { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:14px; }
+.kort { background:#fff; border:1px solid var(--linje); border-radius:10px; padding:16px; display:flex; flex-direction:column; gap:8px; }
+.kort h2 { margin:0; font-size:17px; font-weight:600; }
+.kort .sted { font-size:13px; color:var(--dempet); margin-top:-6px; }
+.pris { font-size:20px; font-weight:600; }
+.tall { display:flex; flex-wrap:wrap; gap:6px; }
+.tall span { background:var(--gra); border-radius:4px; padding:3px 8px; font-size:13px; }
+.merke { display:inline-block; border-radius:4px; padding:2px 8px; font-size:12px; font-weight:500; }
+.r-lav { background:#e3f4e8; color:#1e6b36; } .r-middels { background:#fff2d6; color:#8a5a00; } .r-høy { background:#fde3e0; color:#a5281a; }
+.solgt { background:#ddd; color:#444; }
+.kort p { margin:0; font-size:14px; line-height:1.5; }
+.lenker { display:flex; flex-wrap:wrap; gap:8px; margin-top:auto; padding-top:6px; }
+.lenker a, .lenker button { font-size:13px; padding:7px 12px; }
+dialog { border:0; border-radius:10px; padding:0; width:min(760px, calc(100% - 32px)); max-height:90vh; }
+dialog::backdrop { background:rgba(0,0,0,.5); }
+.notat { padding:20px; font-size:14px; line-height:1.5; }
+.notat h1 { font-size:21px; margin:0 0 4px; }
+.notat h2 { font-size:16px; color:var(--rod); margin:18px 0 6px; }
+.notat table { border-collapse:collapse; width:100%; }
+.notat td { border:1px solid var(--linje); padding:6px; vertical-align:top; font-size:13px; }
+.notat .boks { border-left:4px solid var(--rod); padding:4px 0 4px 10px; margin:10px 0; }
+.notat .liten { font-size:12px; color:var(--dempet); }
+.lukk { position:sticky; top:0; display:flex; justify-content:flex-end; gap:8px; padding:10px 14px; background:#fff; border-bottom:1px solid var(--linje); }
+footer { max-width:1100px; margin:20px auto; padding:0 16px 30px; font-size:12px; color:var(--dempet); }
+.tom { background:#fff; border:1px dashed var(--linje); border-radius:10px; padding:30px; text-align:center; color:var(--dempet); }
+</style>
+</head>
+<body>
+<header><div class="inn">
+  <div><h1>Leilighetssøk <span>Oslo</span></h1><p>Notat for hver leilighet. Oppdatert 16.11.2026.</p></div>
+  <a class="knapp" id="leggTil" href="" target="_blank" rel="noopener">+ Legg til FINN-kode</a>
+</div></header>
+<main>
+  <div class="filtre">
+    <label>Søk<input id="fSok" type="search" placeholder="Adresse eller stikkord"></label>
+    <label>Maks totalpris (kr)<input id="fPris" type="number" step="100000" value="4500000"></label>
+    <label>Bydel<select id="fBydel"><option value="">Alle</option></select></label>
+    <label>Minst m² (BRA-i)<input id="fM2" type="number" min="0" placeholder="0"></label>
+    <label>Minst soverom<select id="fSov"><option value="0">Alle</option><option>1</option><option>2</option><option>3</option></select></label>
+    <label>Risiko<select id="fRisiko"><option value="">Alle</option><option value="lav">Lav</option><option value="middels">Middels eller lavere</option></select></label>
+    <label>Sorter<select id="fSort"><option value="nyest">Nyest lagt inn</option><option value="pris">Lavest totalpris</option><option value="m2">Lavest pris per m²</option><option value="felles">Lavest felleskost</option></select></label>
+    <label class="boks"><input id="fSolgt" type="checkbox"> Vis solgte</label>
+  </div>
+  <div class="antall" id="antall"></div>
+  <div class="liste" id="liste"></div>
+</main>
+<dialog id="dlg"><div class="lukk"><a class="knapp lys" id="dlgPdf" target="_blank">Last ned PDF</a><button class="knapp" id="dlgLukk">Lukk</button></div><div class="notat" id="dlgInn"></div></dialog>
+<footer>Notatene er MERK AS sine egne oppsummeringer av annonsen, salgsoppgaven og tilstandsrapporten, ikke kopier. Les alltid hele salgsoppgaven før bud. Ikke takst, juridisk eller finansiell rådgivning. Annonsene ligger på FINN.no.</footer>
+<script>
+const DATA = [{"finnkode": "479389147", "adresse": "Fagerheimgata 20 A", "postnr": "0475", "bydel": "Sagene", "boligtype": "Råloft med rammetillatelse", "eieform": "Eierseksjon", "bra_m2": null, "bra_merknad": "Råloft. Godkjent leilighet blir ca. 33 m² (rammetillatelse)", "rom": 2, "soverom": 1, "etasje": "7 (loft)", "byggear": 1952, "heis": "Til 6. etasje", "prisantydning": 2000000, "fellesgjeld": 177905, "omkostninger": 55770, "totalpris": 2233675, "felleskost_mnd": 5046, "megler": "EIE", "visninger": ["19.11.2026 kl. 17–18", "22.11.2026 kl. 14:30–15:30"], "status": "til salgs", "lagt_inn": "2026-11-16", "sist_sjekket": "2026-11-16", "risiko": "høy", "kort_sagt": "Ikke en ferdig leilighet, men et råloft med rammetillatelse til én toroms på ca. 33 m². Kjøper overtar all risiko, og det finnes ingen tilstandsrapport. Utbyggingen er anslått til ca. 2,2 mill. kr i beste fall, og den kan bli mye dyrere.", "plusser": ["Rammetillatelse fra PBE (19.06.2026) til én boenhet med takterrasse, gyldig til 19.06.2029", "Torshov: sentralt, med trikk og grøntområder i nærheten", "Uteplass på ca. 30 m² i bakgården"], "tilstand": {"rapport": "Ingen tilstandsrapport (råloft)", "tg3": [], "tg2": []}, "fellesskap": ["Sameiet Fagerheimsgt. 20, 28 seksjoner. Murgård fra 1952", "Ny eier må søke sameiet om nytt samtykke til utbyggingen", "Fyring og varmtvann er ikke koblet til seksjonen"], "risikoer": ["Kjøper overtar all risiko for brann, lyd, konstruksjon, TEK17 og igangsettingstillatelse", "Brannkonseptet kan kreve brannalarm, røykluke og nye dører i hele trappeoppgangen", "Bevaringsverdig område: Byantikvaren kan stille krav", "Byggekostnaden er ca. 2,2–6,1 mill. kr (MERKs grovkalkyle rev. A)"], "sporsmal_megler": ["Hvem betaler brannsikringen av fellesarealene som brannkonseptet krever?", "Kan loftet kobles til sentralanlegget for varme og varmtvann?", "Hvilke vilkår setter styret for nytt samtykke?", "Finnes det beregninger av bæreevnen for etasjeskilleren?"], "ukjent": ["Bæreevnen i etasjeskilleren", "Kostnaden for varme og varmtvann"], "kilder": ["FINN 479389147", "Salgsoppgave og vedlegg fra EIE (lest 16.11.2026)", "PBE sak 2025/10888"], "notat_html": "\n<h1>Notat: Fagerheimgata 20 A<\/h1>\n<p class=\"liten\">MERK AS · laget 2026-11-16 · sist sjekket 2026-11-16 · status: til salgs · risiko: høy<\/p>\n<div class=\"boks\"><b>Kort sagt:<\/b> Ikke en ferdig leilighet, men et råloft med rammetillatelse til én toroms på ca. 33 m². Kjøper overtar all risiko, og det finnes ingen tilstandsrapport. Utbyggingen er anslått til ca. 2,2 mill. kr i beste fall, og den kan bli mye dyrere.<\/div>\n<h2>1. Boligen<\/h2><table><tr><td><b>Adresse<\/b><\/td><td>Fagerheimgata 20 A, 0475 Oslo (Sagene)<\/td><\/tr><tr><td><b>Type<\/b><\/td><td>Råloft med rammetillatelse, eierseksjon<\/td><\/tr><tr><td><b>Størrelse<\/b><\/td><td>BRA-i ukjent (Råloft. Godkjent leilighet blir ca. 33 m² (rammetillatelse)), 2 rom, 1 soverom<\/td><\/tr><tr><td><b>Etasje / byggeår<\/b><\/td><td>7 (loft) / 1952. Heis: Til 6. etasje<\/td><\/tr><tr><td><b>Megler<\/b><\/td><td>EIE<\/td><\/tr><tr><td><b>Visning<\/b><\/td><td>19.11.2026 kl. 17–18, 22.11.2026 kl. 14:30–15:30<\/td><\/tr><tr><td><b>FINN-kode<\/b><\/td><td>479389147<\/td><\/tr><\/table>\n<h2>2. Økonomi<\/h2><table><tr><td><b>Prisantydning<\/b><\/td><td>2 000 000 kr<\/td><\/tr><tr><td><b>Fellesgjeld<\/b><\/td><td>177 905 kr<\/td><\/tr><tr><td><b>Omkostninger<\/b><\/td><td>55 770 kr<\/td><\/tr><tr><td><b>Totalpris<\/b><\/td><td>2 233 675 kr<\/td><\/tr><tr><td><b>Felleskostnader<\/b><\/td><td>5 046 kr per måned<\/td><\/tr><\/table>\n<h2>3. Tilstand<\/h2>\n<p><b>Tilstandsrapport:<\/b> Ingen tilstandsrapport (råloft)<\/p>\n<p><b>TG3 (store avvik):<\/b><\/p><p>Ingen TG3.<\/p>\n<p><b>TG2 (avvik som bør følges opp):<\/b><\/p><p>Ingen TG2.<\/p>\n<h2>4. Sameiet / borettslaget<\/h2><ul><li>Sameiet Fagerheimsgt. 20, 28 seksjoner. Murgård fra 1952<\/li><li>Ny eier må søke sameiet om nytt samtykke til utbyggingen<\/li><li>Fyring og varmtvann er ikke koblet til seksjonen<\/li><\/ul>\n<h2>5. Det som er bra<\/h2><ul><li>Rammetillatelse fra PBE (19.06.2026) til én boenhet med takterrasse, gyldig til 19.06.2029<\/li><li>Torshov: sentralt, med trikk og grøntområder i nærheten<\/li><li>Uteplass på ca. 30 m² i bakgården<\/li><\/ul>\n<h2>6. De største risikoene<\/h2><ul><li>Kjøper overtar all risiko for brann, lyd, konstruksjon, TEK17 og igangsettingstillatelse<\/li><li>Brannkonseptet kan kreve brannalarm, røykluke og nye dører i hele trappeoppgangen<\/li><li>Bevaringsverdig område: Byantikvaren kan stille krav<\/li><li>Byggekostnaden er ca. 2,2–6,1 mill. kr (MERKs grovkalkyle rev. A)<\/li><\/ul>\n<h2>7. Spørsmål til megler før bud<\/h2><ul><li>Hvem betaler brannsikringen av fellesarealene som brannkonseptet krever?<\/li><li>Kan loftet kobles til sentralanlegget for varme og varmtvann?<\/li><li>Hvilke vilkår setter styret for nytt samtykke?<\/li><li>Finnes det beregninger av bæreevnen for etasjeskilleren?<\/li><\/ul>\n<h2>8. Det vi ikke vet<\/h2><ul><li>Bæreevnen i etasjeskilleren<\/li><li>Kostnaden for varme og varmtvann<\/li><\/ul>\n<h2>9. Kilder<\/h2><ul><li>FINN 479389147<\/li><li>Salgsoppgave og vedlegg fra EIE (lest 16.11.2026)<\/li><li>PBE sak 2025/10888<\/li><\/ul>\n<p class=\"liten\">Forbehold: Notatet er MERKs egen oppsummering av annonsen, salgsoppgaven og tilstandsrapporten. Les alltid hele salgsoppgaven selv før bud.\nNotatet er ikke takst, juridisk eller finansiell rådgivning.<\/p>\n"}];
+const $ = id => document.getElementById(id);
+const kr = v => v == null ? "ukjent" : v.toLocaleString("nb-NO") + " kr";
+const RISIKO = { lav: 0, middels: 1, "høy": 2 };
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const leggTil = $("leggTil");
+if (!leggTil.getAttribute("href") || leggTil.getAttribute("href").startsWith("{{")) leggTil.style.display = "none";
+
+[...new Set(DATA.map(l => l.bydel).filter(Boolean))].sort().forEach(b => $("fBydel").add(new Option(b, b)));
+
+function m2pris(l) { return l.bra_m2 ? l.totalpris / l.bra_m2 : Infinity; }
+
+function vis() {
+  const sok = $("fSok").value.trim().toLowerCase();
+  const maks = Number($("fPris").value) || Infinity;
+  const bydel = $("fBydel").value, minM2 = Number($("fM2").value) || 0, minSov = Number($("fSov").value) || 0;
+  const risiko = $("fRisiko").value, solgte = $("fSolgt").checked;
+  let r = DATA.filter(l =>
+    (solgte || l.status !== "solgt") &&
+    (l.totalpris ?? 0) <= maks &&
+    (!bydel || l.bydel === bydel) &&
+    (!minM2 || (l.bra_m2 ?? 0) >= minM2) &&
+    (!minSov || (l.soverom ?? 0) >= minSov) &&
+    (!risiko || RISIKO[l.risiko] <= RISIKO[risiko]) &&
+    (!sok || JSON.stringify([l.adresse, l.bydel, l.boligtype, l.kort_sagt, l.finnkode]).toLowerCase().includes(sok)));
+  const s = $("fSort").value;
+  r.sort((a, b) => s === "pris" ? a.totalpris - b.totalpris : s === "m2" ? m2pris(a) - m2pris(b)
+    : s === "felles" ? (a.felleskost_mnd ?? 1e9) - (b.felleskost_mnd ?? 1e9) : b.lagt_inn.localeCompare(a.lagt_inn));
+  $("antall").textContent = `${r.length} av ${DATA.length} leiligheter`;
+  $("liste").innerHTML = r.length ? r.map(l => `
+    <article class="kort">
+      <div><span class="merke r-${esc(l.risiko)}">Risiko: ${esc(l.risiko)}</span> ${l.status === "solgt" ? '<span class="merke solgt">Solgt</span>' : ""}</div>
+      <h2>${esc(l.adresse)}</h2>
+      <div class="sted">${esc(l.postnr)} Oslo · ${esc(l.bydel)} · ${esc(l.boligtype)}</div>
+      <div class="pris">${kr(l.totalpris)} <small style="font-size:12px;font-weight:400;color:#666">totalpris</small></div>
+      <div class="tall">
+        <span>${l.bra_m2 ? l.bra_m2 + " m²" : "m² ukjent"}</span><span>${l.soverom ?? "?"} soverom</span>
+        <span>Felleskost ${kr(l.felleskost_mnd)}/mnd</span><span>Fellesgjeld ${kr(l.fellesgjeld)}</span>
+        ${l.byggear ? `<span>Bygget ${l.byggear}</span>` : ""}
+      </div>
+      <p>${esc(l.kort_sagt)}</p>
+      <div class="lenker">
+        <button class="knapp" data-kode="${esc(l.finnkode)}">Les notatet</button>
+        <a class="knapp lys" href="https://www.finn.no/realestate/homes/ad.html?finnkode=${encodeURIComponent(l.finnkode)}" target="_blank" rel="noopener">Se på FINN</a>
+      </div>
+    </article>`).join("") : '<div class="tom">Ingen leiligheter passer filtrene.</div>';
+}
+
+$("liste").addEventListener("click", ev => {
+  const k = ev.target.closest("button[data-kode]"); if (!k) return;
+  const l = DATA.find(x => x.finnkode === k.dataset.kode);
+  $("dlgInn").innerHTML = l.notat_html;
+  $("dlgPdf").href = "notater/" + encodeURIComponent(l.finnkode) + ".pdf";
+  $("dlg").showModal();
+});
+$("dlgLukk").onclick = () => $("dlg").close();
+document.querySelectorAll(".filtre input, .filtre select").forEach(el => el.addEventListener("input", vis));
+vis();
+</script>
+</body>
+</html>
